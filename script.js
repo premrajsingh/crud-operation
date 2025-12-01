@@ -12,7 +12,10 @@ let prevBtn = document.querySelector(".prev-btn");
 let nextBtn = document.querySelector(".next-btn");
 
 // Backend API base URL (must match your Node/Express server)
-const API_BASE = "http://localhost:5000/api/employees";
+// Use relative path for production (works on Render), fallback to localhost for development
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? "http://localhost:5000/api/employees"
+  : "/api/employees";
 
 let alldata = [];   // master data source (from backend or localStorage)
 let url = "";       // profile image data URL

@@ -8,8 +8,8 @@ const employeesRouter = require("./server/routes/employees");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// MongoDB Connection
-const MONGODB_URI =
+// MongoDB Connection - use environment variable in production, fallback to hardcoded for local dev
+const MONGODB_URI = process.env.MONGODB_URI ||
   "mongodb+srv://singhpremraj264_db_user:TG3HmiEKxGBvjdK8@cluster0.vst3j0k.mongodb.net/employee_crud?retryWrites=true&w=majority&appName=Cluster0";
 
 // Middleware
@@ -37,6 +37,8 @@ mongoose
     });
   })
   .catch((err) => {
-    console.error("❌ Failed to connect to MongoDB", err.message);
+    console.error("❌ Failed to connect to MongoDB");
+    console.error("Error message:", err.message);
+    console.error("Full error:", err);
     process.exit(1);
   });

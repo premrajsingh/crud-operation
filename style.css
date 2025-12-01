@@ -1,37 +1,510 @@
-.head{
-    display: flex;
-    justify-content: space-between;
-    background-color: #1c2658c8;
-    align-items: center;
-}
-*{
-    color: white;
-}
-.delete,.add{
-    font-weight: bold;
-}
-.searchn{
-    padding: 0;
-    margin: 0;
-}
-.search input{
-    border: none;
-}
-.menut{
-    margin-top: 2rem;
-}
-.footer{
-    justify-content: end;
-}
-.footer button{
-    border-radius: 5px;
-    font-weight: bold;
+/* 
+  Global layout & theme
+  ------------------------------------------------------------------ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
 }
 
-.active{
-    background-color: rgb(17, 232, 192) ;
+html,
+body {
+    height: 100%;
 }
-.pgMain{
-    background-color: #1c2658c8;
-    border: navy;
+
+body {
+    margin: 0;
+    font-family: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+
+.app-body {
+    min-height: 100vh;
+    display: flex;
+    align-items: stretch;
+}
+
+.app-body.theme-dark {
+    /* Office/employee themed background photo + softer gradient overlay so image stays visible */
+    background:
+        linear-gradient(135deg, rgba(5, 7, 20, 0.78), rgba(5, 7, 20, 0.78)),
+        url("https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=1600") center/cover no-repeat fixed;
+    color: #f7f9ff;
+}
+
+.app-body.theme-light {
+    /* Lighter overlay so office image is clearly visible in day mode */
+    background:
+        linear-gradient(135deg, rgba(245, 249, 255, 0.6), rgba(226, 235, 255, 0.6)),
+        url("https://images.pexels.com/photos/3184292/pexels-photo-3184292.jpeg?auto=compress&cs=tinysrgb&w=1600") center/cover no-repeat fixed;
+    color: #0b1020;
+}
+
+/* 
+  App header
+  ------------------------------------------------------------------ */
+
+.app-header {
+    color: inherit;
+    position: relative;
+}
+
+.app-header-inner {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1.25rem 1.75rem;
+    border-radius: 1.25rem;
+    background:
+        radial-gradient(circle at top left, rgba(0, 245, 160, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(0, 217, 245, 0.16), transparent 55%),
+        linear-gradient(135deg, rgba(12, 16, 46, 0.95), rgba(45, 32, 109, 0.98));
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(18px);
+}
+
+.app-header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    align-self: center;
+    padding: 0.25rem 0.85rem;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.38);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(231, 236, 255, 0.9);
+}
+
+.app-header-badge img {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+.app-header-badge span {
+    white-space: nowrap;
+}
+
+.app-title {
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.app-body.theme-light .app-header-inner {
+    background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(234, 179, 8, 0.16), transparent 55%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.96));
+    border-color: rgba(148, 163, 184, 0.6);
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.25);
+}
+
+.app-body.theme-light .app-header-badge {
+    background: rgba(15, 23, 42, 0.06);
+    border-color: rgba(148, 163, 184, 0.5);
+    color: #0f172a;
+}
+
+/* Theme toggle button */
+
+.theme-toggle {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.75rem;
+    width: 2.15rem;
+    height: 2.15rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(0, 0, 0, 0.4);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffe9a8;
+    cursor: pointer;
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
+    transition: background 0.18s ease, transform 0.15s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    z-index: 2;
+}
+
+.theme-toggle:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+}
+
+.theme-toggle i {
+    font-size: 0.95rem;
+}
+
+.theme-icon-light {
+    display: none;
+}
+
+.app-body.theme-light .theme-icon-light {
+    display: inline-block;
+    color: #ffb545;
+}
+
+.app-body.theme-light .theme-icon-dark {
+    display: none;
+}
+
+.app-body.theme-light .theme-toggle {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: rgba(15, 23, 42, 0.2);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+}
+
+.app-body.theme-light .theme-toggle:hover {
+    background: #ffffff;
+}
+
+/* 
+  Card & table styling
+  ------------------------------------------------------------------ */
+
+.app-card {
+    background: rgba(9, 11, 28, 0.9);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    color: inherit;
+}
+
+.app-body.theme-light .app-card {
+    background: rgba(255, 255, 255, 0.82);
+    border-color: rgba(148, 163, 184, 0.6);
+    box-shadow: 0 18px 38px rgba(15, 23, 42, 0.18);
+}
+
+.section-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+}
+
+.app-table {
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.app-table thead {
+    background: linear-gradient(90deg, #273f8f, #7451ff);
+}
+
+.app-table thead th {
+    border-bottom-width: 0;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.app-table tbody tr {
+    transition: background-color 0.18s ease, transform 0.18s ease;
+}
+
+.app-table tbody tr:hover {
+    background-color: rgba(116, 81, 255, 0.12);
+    transform: translateY(-1px);
+}
+
+.app-body.theme-light .app-table thead {
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+}
+
+.app-body.theme-light .app-table tbody tr:hover {
+    background-color: rgba(148, 163, 184, 0.18);
+}
+
+.app-body.theme-light .table-dark,
+.app-body.theme-light .table-dark > :not(caption) > * > * {
+    background-color: transparent;
+    color: #0b1020;
+    /* This line removes the black stripes in light mode */
+    --bs-table-accent-bg: transparent; 
+    box-shadow: none !important;
+}
+
+.app-table img {
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+}
+
+/* 
+  Head controls (search + buttons)
+  ------------------------------------------------------------------ */
+
+.head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    border-radius: 0.75rem;
+    background: linear-gradient(90deg, rgba(34, 46, 109, 0.95), rgba(12, 17, 46, 0.95));
+}
+
+.head-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.search-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: rgba(7, 11, 34, 0.9);
+    border-radius: 999px;
+    padding-inline: 0.75rem 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    min-width: 220px;
+}
+
+.search-icon {
+    color: #9fa8ff;
+    font-size: 0.85rem;
+    margin-right: 0.35rem;
+}
+
+.search {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #f7f9ff;
+    font-size: 0.9rem;
+    padding-inline: 0.4rem 0;
+}
+
+.search::placeholder {
+    color: rgba(199, 206, 255, 0.7);
+}
+
+.head-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.menut {
+    margin-top: 1.8rem;
+}
+
+/* 
+  Buttons & pagination
+  ------------------------------------------------------------------ */
+
+.btn {
+    border-radius: 999px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #7451ff, #4b8bff);
+    border: none;
+    box-shadow: 0 0 0 1px rgba(128, 111, 255, 0.5);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #8a65ff, #5c9bff);
+}
+
+.btn-outline-danger {
+    border-color: rgba(255, 99, 132, 0.7);
+    color: #ff9fb4;
+}
+
+.btn-outline-danger:hover {
+    background-color: rgba(255, 99, 132, 0.16);
+    color: #ffe4ea;
+}
+
+.btn-outline-light {
+    border-color: rgba(248, 249, 250, 0.7);
+}
+
+.app-body.theme-light .btn-outline-light {
+    border-color: rgba(148, 163, 184, 0.9);
+    color: #1e293b;
+}
+
+.pgMain {
+    padding: 0.6rem 0.9rem;
+    border-radius: 999px;
+    background: rgba(10, 14, 38, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-body.theme-light .pgMain {
+    background: rgba(255, 255, 255, 0.88);
+    border-color: rgba(148, 163, 184, 0.7);
+}
+
+.pagination-box .paginate-btn {
+    min-width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    color: #f7f9ff;
+    background: transparent;
+    font-size: 0.85rem;
+    transition: all 0.18s ease;
+}
+
+.pagination-box .paginate-btn:hover {
+    background-color: rgba(116, 81, 255, 0.25);
+}
+
+.pagination-box .paginate-btn.active {
+    background: linear-gradient(135deg, #00f5a0, #00d9f5);
+    color: #050509;
+    font-weight: 600;
+}
+
+/* 
+  Modal styling
+  ------------------------------------------------------------------ */
+
+.app-modal {
+    background: #070b20;
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    overflow: hidden;
+    color: inherit;
+}
+
+.app-modal .modal-header {
+    background: linear-gradient(120deg, #202b68, #131935);
+    color: #f7f9ff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.app-modal .modal-body {
+    padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.app-modal .form-label {
+    color: rgba(226, 232, 255, 0.9);
+}
+
+.app-modal .form-control {
+    background-color: #050716;
+    border-color: rgba(255, 255, 255, 0.12);
+    color: #f7f9ff;
+    border-radius: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.app-modal .form-control:focus {
+    box-shadow: 0 0 0 0.18rem rgba(116, 81, 255, 0.45);
+    border-color: #7451ff;
+}
+
+.app-modal .form-control[type="file"] {
+    padding: 0.45rem 0.75rem;
+}
+
+.app-body.theme-light .app-modal {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(148, 163, 184, 0.6);
+}
+
+.app-body.theme-light .app-modal .modal-header {
+    background: linear-gradient(120deg, #2563eb, #7c3aed);
+    color: #f9fafb;
+    border-bottom-color: rgba(15, 23, 42, 0.12);
+}
+
+.app-body.theme-light .app-modal .form-label {
+    color: #111827;
+}
+
+.app-body.theme-light .app-modal .form-control {
+    background-color: #f9fafb;
+    border-color: rgba(148, 163, 184, 0.9);
+    color: #0b1020;
+}
+
+.app-body.theme-light .app-modal .form-control:focus {
+    box-shadow: 0 0 0 0.18rem rgba(59, 130, 246, 0.35);
+    border-color: #2563eb;
+}
+
+.footer {
+    justify-content: flex-end;
+}
+
+.footer button {
+    font-weight: 600;
+}
+
+/* 
+  Responsive behavior
+  ------------------------------------------------------------------ */
+
+@media (max-width: 767.98px) {
+    .head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .head-controls {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .search-wrapper {
+        width: 100%;
+    }
+
+    .head-buttons {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .app-card {
+        border-radius: 0.9rem;
+    }
+
+    .app-table th,
+    .app-table td {
+        padding: 0.45rem 0.35rem;
+        font-size: 0.75rem;
+        white-space: nowrap;
+    }
+
+    .pgMain {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .app-title {
+        font-size: 1.5rem;
+    }
+
+    .app-modal .modal-body {
+        padding-inline: 1.1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+} 

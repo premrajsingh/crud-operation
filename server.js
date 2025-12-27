@@ -13,10 +13,11 @@ const PORT = process.env.PORT || 5000;
 let MONGODB_URI = process.env.MONGODB_URI || 
   "mongodb+srv://singhpremraj264_db_user:VdQpMMrtU5zi5YaP@cluster0.3zdgegx.mongodb.net/employee_crud?retryWrites=true&w=majority&appName=Cluster0";
 
-// Clean up the URI (remove quotes if accidentally included)
-MONGODB_URI = MONGODB_URI.trim().replace(/^["']|["']$/g, '');
+// Clean up the URI (remove quotes if accidentally included - handles single/double/wrapped quotes)
+MONGODB_URI = MONGODB_URI.trim().replace(/^["']+|["']+$/g, '');
 
 console.log("🔗 MongoDB URI configured:", MONGODB_URI.replace(/:[^:@]+@/, ':****@')); // Hide password in logs
+console.log("🔍 URI Start/End chars:", JSON.stringify(MONGODB_URI.slice(0, 10)) + "..." + JSON.stringify(MONGODB_URI.slice(-5))); // Debug format
 
 // Middleware
 app.use(cors());

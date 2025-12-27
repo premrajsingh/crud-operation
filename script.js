@@ -63,27 +63,23 @@ regform.onsubmit = async (e) => {
         });
 
         if (!res.ok) {
-          throw new Error("Failed to create employee");
+          const errorData = await res.json().catch(() => ({ message: "Unknown error" }));
+          throw new Error(errorData.message || errorData.error || "Failed to create employee");
         }
 
-        swal("Data inserted", "sucessfully", "success");
+        const savedEmployee = await res.json();
+        console.log("✅ Employee created:", savedEmployee);
+        swal("Data inserted", "successfully", "success");
         closebtn.click();
         regform.reset();
         url = "";
         await fetchEmployeesAndRender();
       } catch (err) {
-        // backend failed → fall back to localStorage
-        console.warn("Backend create failed, falling back to localStorage", err);
-        useBackend = false;
-        loadFromLocal();
-        const localPayload = { ...payload, _id: Date.now().toString() };
-        alldata.push(localPayload);
-        saveToLocal();
-        swal("Offline mode", "Data saved in browser storage", "info");
-        closebtn.click();
-        regform.reset();
-        url = "";
-        buildPagination();
+        // Show actual error message
+        console.error("❌ Backend create failed:", err);
+        const errorMsg = err.message || "Failed to connect to server. Check console for details.";
+        swal("Error", errorMsg, "error");
+        // Don't automatically fall back - let user know there's an issue
       }
     } else {
       // localStorage-only mode
@@ -413,13 +409,15 @@ const fetchEmployeesAndRender = async () => {
   try {
     const res = await fetch(API_BASE);
     if (!res.ok) {
-      throw new Error("Failed to fetch employees");
+      throw new Error(`Failed to fetch employees: ${res.status} ${res.statusText}`);
     }
     alldata = await res.json();
+    console.log(`✅ Fetched ${alldata.length} employees from backend`);
     useBackend = true;
     buildPagination();
   } catch (err) {
-    console.warn("Backend fetch failed, using localStorage instead", err);
+    console.error("❌ Backend fetch failed:", err);
+    console.warn("Using localStorage instead");
     useBackend = false;
     loadFromLocal();
     buildPagination();

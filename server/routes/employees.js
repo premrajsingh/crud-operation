@@ -7,8 +7,10 @@ const router = express.Router();
 router.get("/", async (req, res) => {
   try {
     const employees = await Employee.find().sort({ createdAt: -1 });
+    console.log(`📋 Fetched ${employees.length} employees`);
     res.json(employees);
   } catch (err) {
+    console.error("❌ Error fetching employees:", err.message);
     res.status(500).json({ message: "Failed to fetch employees", error: err.message });
   }
 });
@@ -16,10 +18,14 @@ router.get("/", async (req, res) => {
 // POST /api/employees - create employee
 router.post("/", async (req, res) => {
   try {
+    console.log("📝 Creating employee:", { name: req.body.name, email: req.body.email });
     const employee = new Employee(req.body);
     const saved = await employee.save();
+    console.log("✅ Employee created successfully:", saved._id);
     res.status(201).json(saved);
   } catch (err) {
+    console.error("❌ Error creating employee:", err.message);
+    console.error("Full error:", err);
     res.status(400).json({ message: "Failed to create employee", error: err.message });
   }
 });

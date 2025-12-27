@@ -16,6 +16,9 @@ let MONGODB_URI = process.env.MONGODB_URI ||
 // Clean up the URI (remove quotes if accidentally included - handles single/double/wrapped quotes)
 MONGODB_URI = MONGODB_URI.trim().replace(/^["']+|["']+$/g, '');
 
+// Disable buffering to fail fast if disconnected (HELPS DEBUGGING)
+mongoose.set('bufferCommands', false); 
+
 console.log("🔗 MongoDB URI configured:", MONGODB_URI.replace(/:[^:@]+@/, ':****@')); // Hide password in logs
 console.log("🔍 URI Start/End chars:", JSON.stringify(MONGODB_URI.slice(0, 10)) + "..." + JSON.stringify(MONGODB_URI.slice(-5))); // Debug format
 
@@ -65,7 +68,11 @@ mongoose.connection.on("disconnected", () => {
 
 // Start server only after DB connects
 mongoose
-  .connect(MONGODB_URI)
+  .connect(MONGODB_URI, {
+    serverSelectionTimeoutMS: 5000, // Fail after 5 seconds if server is unavailable
+    socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
+    family: 4 // Force IPv4 to avoid IPv6 issues on some cloud providers
+  })
   .then(() => {
     console.log("✅ Connected to MongoDB");
     console.log("📊 Database:", mongoose.connection.name);
